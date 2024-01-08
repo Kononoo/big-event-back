@@ -59,6 +59,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updatePwd(Integer id, String newPwd) {
+        newPwd = DigestUtils.md5DigestAsHex(newPwd.getBytes());
         userMapper.updatePwd(newPwd, id);
     }
 }

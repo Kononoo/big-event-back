@@ -7,6 +7,7 @@ import com.ronan.service.UserService;
 import com.ronan.utils.JwtUtil;
 import jakarta.validation.constraints.Pattern;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.el.parser.Token;
 import org.hibernate.validator.constraints.URL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -87,7 +88,7 @@ public class UserController {
         return R.success(user);
     }
 
-    @PutMapping("/update")
+    @PatchMapping("/update")
     public R<String> updateUserInfo(@RequestBody @Validated User user) {
         log.info("更新用户信息：{}", user);
         userService.update(user);
@@ -101,12 +102,13 @@ public class UserController {
         return R.success("修改头像成功");
     }
 
-    @PutMapping("/updatePwd")
-    public R<String> updatePassword(@RequestBody Map<String, String> params) {
+    @PatchMapping("/updatePwd")
+    public R<String> updatePassword(@RequestBody Map<String, String> params, @RequestHeader("Authorization") String token) {
         // 获取参数
         String oldPwd = params.get("old_pwd");
         String newPwd = params.get("new_pwd");
         String rePwd = params.get("re_pwd");
+        log.info("更新密码,旧密码:{} 新密码:{}", oldPwd, newPwd);
 
         if (!StringUtils.hasLength(oldPwd) || !StringUtils.hasLength(newPwd) || !StringUtils.hasLength(rePwd)) {
             return R.error("缺少参数");
@@ -124,6 +126,9 @@ public class UserController {
         }
         // 完成密码更新
         userService.updatePwd(id, newPwd);
+        // 删除redis中保存的token
+        ValueOperations<String, String> operations = stringRedisTemplate.opsForValue();
+        operations.getOperations().delete(token);
         return R.success("更新密码成功");
     }
 
