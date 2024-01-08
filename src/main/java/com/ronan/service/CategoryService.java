@@ -32,4 +32,16 @@ public interface CategoryService {
      * @return
      */
     Category findById(Integer id);
+
+    /**
+     * 更新文章分类
+     * @param category
+     */
+    void update(Category category);
+
+    /**
+     * 根据id删除文章分类
+     * @param id
+     */
+    void delete(Integer id);
 }

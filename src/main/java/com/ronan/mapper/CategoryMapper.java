@@ -1,9 +1,8 @@
 package com.ronan.mapper;
 
 import com.ronan.entity.Category;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
 
 import java.util.List;
 
@@ -27,4 +26,10 @@ public interface CategoryMapper {
 
     @Select("select * from bg_category where id = #{id}")
     Category selectById(Integer id);
+
+    @Update("update bg_category set category_name = #{categoryName}, category_alias = #{categoryAlias}, update_time = now() where id = #{id}")
+    void updateById(Category category);
+
+    @Delete("delete * from bg_category where id = #{id}")
+    void deleteById(Integer id);
 }

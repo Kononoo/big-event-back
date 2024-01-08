@@ -14,3 +14,8 @@ spring:
       host: localhost
       port: 6379
 
+mybatis:
+  configuration:
+    # 开启日志，开启驼峰命名和下划线命名的自动转换
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true

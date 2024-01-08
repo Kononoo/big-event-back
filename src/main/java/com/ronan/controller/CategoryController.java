@@ -27,7 +27,7 @@ public class CategoryController {
     private CategoryService categoryService;
 
     @PostMapping
-    public R<String> addCategory(@RequestBody @Validated Category category) {
+    public R<String> addCategory(@RequestBody @Validated(Category.Add.class) Category category) {
         log.info("添加分类：{}", category.toString());
         categoryService.add(category);
         return R.success("添加成功");
@@ -47,5 +47,15 @@ public class CategoryController {
         return R.success(category);
     }
 
+    @PutMapping
+    public R<String> update(@RequestBody @Validated(Category.Update.class) Category category) {
+        categoryService.update(category);
+        return R.success("更新成功");
+    }
 
+    @DeleteMapping
+    public R<String> delete(@RequestParam("id") Integer id) {
+        categoryService.delete(id);
+        return R.success("删除成功");
+    }
 }

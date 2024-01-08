@@ -1,5 +1,8 @@
 package com.ronan.service;
 
+import com.ronan.entity.Article;
+import com.ronan.entity.PageBean;
+
 /**
  * ClassName: ArticleService
  * Package: com.ronan.service
@@ -10,4 +13,19 @@ package com.ronan.service;
  * @Version: v1.0
  */
 public interface ArticleService {
+    /**
+     * 添加文章
+     * @param article
+     */
+    void add(Article article);
+
+    /**
+     * 条件分页查询
+     * @param currentPage
+     * @param pageSize
+     * @param categoryId
+     * @param state
+     * @return
+     */
+    PageBean<Article> list(Integer currentPage, Integer pageSize, Integer categoryId, String state);
 }

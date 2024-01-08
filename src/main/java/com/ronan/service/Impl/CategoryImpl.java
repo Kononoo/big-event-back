@@ -45,4 +45,14 @@ public class CategoryImpl implements CategoryService {
         Category category = categoryMapper.selectById(id);
         return category;
     }
+
+    @Override
+    public void update(Category category) {
+        categoryMapper.updateById(category);
+    }
+
+    @Override
+    public void delete(Integer id) {
+        categoryMapper.deleteById(id);
+    }
 }
