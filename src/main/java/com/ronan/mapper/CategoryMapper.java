@@ -24,4 +24,7 @@ public interface CategoryMapper {
 
     @Select("select * from bg_category where create_user = #{id}")
     List<Category> list(Integer id);
+
+    @Select("select * from bg_category where id = #{id}")
+    Category selectById(Integer id);
 }

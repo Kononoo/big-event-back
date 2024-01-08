@@ -41,5 +41,11 @@ public class CategoryController {
         return R.success(categoryList);
     }
 
+    @GetMapping("/detail")
+    public R<Category> getDetail(@RequestParam("id") Integer id) {
+        Category category = categoryService.findById(id);
+        return R.success(category);
+    }
+
 
 }

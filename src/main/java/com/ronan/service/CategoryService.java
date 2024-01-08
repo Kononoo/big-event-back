@@ -20,5 +20,16 @@ public interface CategoryService {
      */
     void add(Category category);
 
+    /**
+     * 获取文章分类列表
+     * @return
+     */
     List<Category> list();
+
+    /**
+     * 根据id获取文章
+     * @param id
+     * @return
+     */
+    Category findById(Integer id);
 }
