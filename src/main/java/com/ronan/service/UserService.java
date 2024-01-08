@@ -44,4 +44,12 @@ public interface UserService {
      * @param avatarUrl
      */
     void updateAvatar(String avatarUrl);
+
+    /**
+     * 更新米密码
+     *
+     * @param id
+     * @param newPwd
+     */
+    void updatePwd(Integer id, String newPwd);
 }

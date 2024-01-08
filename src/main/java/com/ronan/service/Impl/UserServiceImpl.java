@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
-import java.awt.*;
 import java.time.LocalDateTime;
 import java.util.Map;
 
@@ -56,5 +55,10 @@ public class UserServiceImpl implements UserService {
         Map<String,Object> map = ThreadLocalContext.get();
         Integer id = (Integer) map.get("id");
         userMapper.updateAvatar(avatarUrl, id);
+    }
+
+    @Override
+    public void updatePwd(Integer id, String newPwd) {
+        userMapper.updatePwd(newPwd, id);
     }
 }

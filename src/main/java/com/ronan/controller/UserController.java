@@ -7,10 +7,12 @@ import com.ronan.service.UserService;
 import com.ronan.utils.JwtUtil;
 import jakarta.validation.constraints.Pattern;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.validator.constraints.URL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.util.DigestUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,7 +41,7 @@ public class UserController {
 
 
     @PostMapping("/register")
-    public R<String> register(@Pattern(regexp = "^\\w{5,16}$") String username, @Pattern(regexp = "^\\w{5,16}$") String password) {
+    public R<String> register(@Pattern(regexp = "^\\w{2,16}$") String username, @Pattern(regexp = "^\\w{3,16}$") String password) {
         log.info("用户注册：{},{}", username, password);
 
         // if (username != null && username.length() >= 5 && username.length() <= 16 && password != null && password.length() >= 5)
@@ -53,7 +55,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public R<String> login(@Pattern(regexp = "^\\w{5,16}$") String username, @Pattern(regexp = "^\\w{5,16}$") String password) {
+    public R<String> login(@Pattern(regexp = "^\\w{2,16}$") String username, @Pattern(regexp = "^\\w{3,16}$") String password) {
         log.info("用户登录：{},{}", username, password);
         // 根据用户名查询用户
         User loginUser = userService.findByUsername(username);
@@ -86,22 +88,43 @@ public class UserController {
     }
 
     @PutMapping("/update")
-    public R<String> updateUserInfo(@RequestBody User user) {
+    public R<String> updateUserInfo(@RequestBody @Validated User user) {
         log.info("更新用户信息：{}", user);
         userService.update(user);
         return R.success("修改信息成功");
     }
 
-    @PatchMapping("/updateAvatar")
-    public R<String> updateAvatar(@RequestParam("avatarUrl") String avatarUrl) {
+    @PatchMapping("/updateAvatar")     // 添加@URL对url参数校验
+    public R<String> updateAvatar(@RequestParam("avatarUrl") @URL String avatarUrl) {
         log.info("修改用户头像:{}", avatarUrl);
         userService.updateAvatar(avatarUrl);
         return R.success("修改头像成功");
     }
 
     @PutMapping("/updatePwd")
-    public R<String> updatePassword() {
+    public R<String> updatePassword(@RequestBody Map<String, String> params) {
+        // 获取参数
+        String oldPwd = params.get("old_pwd");
+        String newPwd = params.get("new_pwd");
+        String rePwd = params.get("re_pwd");
 
+        if (!StringUtils.hasLength(oldPwd) || !StringUtils.hasLength(newPwd) || !StringUtils.hasLength(rePwd)) {
+            return R.error("缺少参数");
+        }
+        if (!newPwd.equals(rePwd)) {
+            return R.error("两次输入的密码不正确");
+        }
+        // 校验参数
+        HashMap<String, Object> map = ThreadLocalContext.get();
+        Integer id = (Integer) map.get("id");
+        User findUser = userService.findById(id);
+        // 校验旧密码
+        if (!findUser.getPassword().equals(DigestUtils.md5DigestAsHex(oldPwd.getBytes()))) {
+            return R.error("原密码不正确");
+        }
+        // 完成密码更新
+        userService.updatePwd(id, newPwd);
+        return R.success("更新密码成功");
     }
 
 }
