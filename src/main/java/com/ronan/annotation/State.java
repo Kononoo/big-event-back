@@ -1,5 +1,6 @@
 package com.ronan.annotation;
 
+import com.ronan.validation.StateValidation;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
@@ -17,7 +18,7 @@ import java.lang.annotation.*;
 @Documented
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = {})
+@Constraint(validatedBy = {StateValidation.class})   // 提供校验规则的类
 public @interface State {
     //提供校验失败后的提示信息
     String message() default "state参数的值只能是已发布或者草稿";

@@ -5,12 +5,9 @@ import com.ronan.entity.PageBean;
 import com.ronan.entity.R;
 import com.ronan.service.ArticleService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.el.parser.Token;
+import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.annotation.RequestScope;
-
-import java.util.List;
 
 /**
  * ClassName: ArticleController
@@ -46,4 +43,24 @@ public class ArticleController {
         return R.success(pageBean);
     }
 
+    @GetMapping("/detail")
+    public R<Article> getDetail(@RequestParam("id") Integer id) {
+        log.info("查询文章详情:{}", id);
+        Article article = articleService.getById(id);
+        return R.success(article);
+    }
+
+    @PutMapping
+    public R<String> update(@RequestBody Article article) {
+        log.info("更新文章：{}", article);
+        articleService.update(article);
+        return R.success("更新成功");
+    }
+
+    @DeleteMapping
+    public R<String> delete(@RequestParam("id") Integer id) {
+        log.info("删除文章：{}", id);
+        articleService.delete(id);
+        return R.success("删除文章成功");
+    }
 }

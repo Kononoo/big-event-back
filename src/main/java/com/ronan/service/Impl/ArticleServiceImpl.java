@@ -10,6 +10,7 @@ import com.ronan.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -42,6 +43,7 @@ public class ArticleServiceImpl implements ArticleService {
         PageBean<Article> pageBean = new PageBean<>();
         // 分页查询
         PageHelper.startPage(currentPage, pageSize);
+
         HashMap<String, Object> map = ThreadLocalContext.get();
         Integer userId = (Integer) map.get("id");
         // 使用插件
@@ -55,5 +57,22 @@ public class ArticleServiceImpl implements ArticleService {
 //        int begin = (currentPage - 1) * pageSize;
 //        List<Article> articleList = articleMapper.list(begin, pageSize, userId, categoryId, state);
 
+    }
+
+    @Override
+    public Article getById(Integer id) {
+        Article article =  articleMapper.selectById(id);
+        return article;
+    }
+
+    @Override
+    public void update(Article article) {
+        article.setUpdateTime(LocalDateTime.now());
+        articleMapper.update(article);
+    }
+
+    @Override
+    public void delete(Integer id) {
+        articleMapper.deleteById(id);
     }
 }
